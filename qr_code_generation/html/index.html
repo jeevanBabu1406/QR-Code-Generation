@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parking System</title>
+    <style>
+      body {
+        font-family: "Helvetica", "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f8f8;
+        color: #333;
+      }
+
+      header {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+      }
+
+      main {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #2c3e50;
+      }
+
+      h2 {
+        color: #3498db;
+      }
+
+      #vehicleNumber,
+      #time {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      #vehicleNumber {
+        color: #27ae60;
+      }
+
+      #time {
+        color: #e74c3c;
+      }
+
+      footer {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #exitButton {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Parking system</h1>
+    </header>
+
+    <main>
+      <h2>Vehicle Information</h2>
+      <h1 id="vehicleNumber"></h1>
+      <h1 id="time"></h1>
+      <h2>Cost per min: ₹5</h2>
+      <button id="exitButton" onclick="redirectToExitPage()">Submit</button>
+    </main>
+
+    <footer>&copy; 2024 Park Wise</footer>
+
+    <script>
+      function getParams() {
+        var params = {},
+          pairs = document.URL.split("?").pop().split("&");
+
+        for (var i = 0, p; i < pairs.length; i++) {
+          p = pairs[i].split("=");
+          params[p[0]] = p[1];
+        }
+
+        return params;
+      }
+
+      const params = getParams();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var vehicleNumberElement = document.getElementById("vehicleNumber");
+        if (params["vehicle_number"]) {
+          vehicleNumberElement.textContent =
+            "Vehicle number: " + params["vehicle_number"];
+        } else {
+          vehicleNumberElement.textContent = "Vehicle number: Not specified";
+        }
+
+        var timeElement = document.getElementById("time");
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        window.hrs_in_mins = hours * 60 + minutes;
+        var seconds = currentTime.getSeconds();
+        var ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        var timeString = "Entry time: " + hours + ":" + minutes + " " + ampm;
+
+        window.entryTime = timeString;
+
+        timeElement.textContent = timeString;
+      });
+
+      function redirectToExitPage() {
+        var vehicleNumber = params["vehicle_number"] || "";
+        var entryTime = encodeURIComponent(window.entryTime);
+        var hrsInMins = window.hrs_in_mins;
+
+        // Redirect to exitpage.html
+        var exitPageUrl =
+          "exitpage.html?entryTime=" +
+          entryTime +
+          "&vehicleNumber=" +
+          encodeURIComponent(vehicleNumber) +
+          "&hrsInMins=" +
+          hrsInMins;
+        window.location.href = exitPageUrl;
+      }
+    </script>
+  </body>
+</html>
